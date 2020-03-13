@@ -19,5 +19,3 @@ for i in range(len(days)):
     weekday(days[i,0],days[i,1],days[i,2])
 
 
-print("Some change")
-print("other change on web")
