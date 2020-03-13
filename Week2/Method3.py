@@ -17,3 +17,6 @@ days = np.array([[1900,1,1],[1919,6,28],[1928,1,30],[1933,12,5],[1948,2,29],\
 
 for i in range(len(days)):
     weekday(days[i,0],days[i,1],days[i,2])
+
+
+print("Some change")
