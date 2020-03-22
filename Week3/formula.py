@@ -24,3 +24,4 @@ if __name__ == '__main__':
     print(getSolution2([1, -10000.0001, 1]))
     print(getPresiceSolution([1, -10000.0001, 1]))
     print("no!!!")
+    print("hello")
