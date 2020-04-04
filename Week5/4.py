@@ -17,16 +17,18 @@ plt.title("Two roots are intersections on the figure")
 plt.show()
 
 # b ==================================================
-def NewtonMethod(F, J, x, precision=1e-4, max_rd=1000):
+def NewtonMethod(F, J, x, precision=1e-2, max_rd=100, show_fig=False):
     F_value = F(x)
     F_norm = np.linalg.norm(F_value, ord=2) 
     rd = 0
+
     while abs(F_norm) > precision:
-        delta = np.linalg.solve(J(x), F_value) 
-        x -= delta
+        delta = np.linalg.solve(J(x), -F_value) 
+        x += delta * 0.1
         F_value = F(x)
         F_norm = np.linalg.norm(F_value, ord=2)
         rd += 1
+        print(x)
         if rd > max_rd:
             print(f"Method failed in {rd:d} steps.")
             exit(-1)
@@ -52,7 +54,7 @@ def J(arr):
         [6 * x, 8 * y]])
 
 
-root1 = NewtonMethod(F, J, [-2, -2*np.exp(-2)])
-root2 = NewtonMethod(F, J, [0, -2])
+root1, _ = NewtonMethod(F, J, [-2, -2*np.exp(-2)])
+root2, _ = NewtonMethod(F, J, [0, -2])
 
 print("roots: ", root1, root2)
