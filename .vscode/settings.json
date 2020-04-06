@@ -1,5 +1,5 @@
 {
     "files.autoSave": "afterDelay",
-    "python.dataScience.useNotebookEditor":false,
+    "python.dataScience.useNotebookEditor":true,
     "python.dataScience.textOutputLimit":0
 }
