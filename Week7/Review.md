@@ -152,12 +152,10 @@ Define Elimination(M, b):
 1. Method: Elimination becomes very easy when the matrix is tridiagonal. Just apply eliminate for one time when reducing a row. 
 2. Pseudocode and Example:
 ```
-Define Elimination(M, b):
+Define Thomas(M, b):
     # reduce to an upper triangular matrix
-    for row i from 0 to n:
-        exchange the row with largest pivot to row i
-        for row j from i to n:
-            eliminate row j with row i
+    for row i from 1 to n:
+        eliminate row i with row i-1
     
     # get solution
     for row i from n to 0:
@@ -165,3 +163,46 @@ Define Elimination(M, b):
 
     return solution
 ```
+
+### (linear) Jacobi Method
+**high dimensional fixed-point method**
+1. Method:
+    1. Split the given matrix $A$ by 
+    $$
+    A=D+L+R
+    $$
+    where $D$ is a diagonal matrix, $L$ and $R$ are left and right part of the matrix.  
+    **Iteration:**  
+    $$
+    D(x^{k+1}-x^k)=b-Ax^k
+    $$
+    which is:
+    $$
+    \Delta x=D^{-1}(b-(L+R)x)
+    $$
+1. Pseudocode and Example:
+```
+Define A
+Define FixedPointMethod(A, x1, N, target):
+    split A to D, L, R
+    Repeat N times or until error < target:
+        x1 = D^(-1) * (b - (L + R) * x1)
+    return x1
+
+Find x1
+Call BisectionMethod(A, x1, N, eps)
+```
+
+### Conjugate Gradient Descent Method
+**Method:**   
+    Compared to Gradient Descent Method, the descent vector is conjugate with each other. Here conjugate means $u^T A v=v^T A u = 0$, where A is a symmetrical matrix.  
+    Problem becomes 
+    $$ 
+    f=\frac{1}{2}x^T A x -b^T x \\
+    \Delta f = Ax -b =0
+    $$
+    Residue: $r_k=b-Ax_k=-\Delta f(x_k)$  
+    **Iteration:**  
+    $x_{n+1}=x_{n} + \alpha_n p_n, \alpha_n = \frac{r_n^T r_n}{p^T_n A p_n}$  
+    $r_{n+1}=r_n - a_n A p_n$  
+    p_{n+1}=r_{n+1}+\beta_n p_n, \beta_n = \frac{r_{n+1}^T r_{n+1}}{r_n^T r_n}
