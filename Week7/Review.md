@@ -137,7 +137,8 @@ Define Elimination(M, b):
     # reduce to an upper triangular matrix
     for row i from 0 to n:
         exchange the row with largest pivot to row i
-        eliminate column i
+        for row j from i to n:
+            eliminate row j with row i
     
     # get solution
     for row i from n to 0:
@@ -146,4 +147,21 @@ Define Elimination(M, b):
     return solution
 ```
 
-### 
+### (linear tridiagonal) Thomas Method
+**a specialized Gaussian elimination method**
+1. Method: Elimination becomes very easy when the matrix is tridiagonal. Just apply eliminate for one time when reducing a row. 
+2. Pseudocode and Example:
+```
+Define Elimination(M, b):
+    # reduce to an upper triangular matrix
+    for row i from 0 to n:
+        exchange the row with largest pivot to row i
+        for row j from i to n:
+            eliminate row j with row i
+    
+    # get solution
+    for row i from n to 0:
+        eliminate column i and get solution
+
+    return solution
+```

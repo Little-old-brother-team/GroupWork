@@ -1,5 +1,9 @@
 {
     "files.autoSave": "afterDelay",
     "python.dataScience.useNotebookEditor":true,
-    "python.dataScience.textOutputLimit":0
+    "python.dataScience.textOutputLimit": 0,
+    "cSpell.words": [
+        "Tridiagonal",
+        "raphson"
+    ]
 }
