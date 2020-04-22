@@ -193,6 +193,56 @@ Find x1
 Call BisectionMethod(A, x1, N, eps)
 ```
 
+### Jacobi method
+Indirect algorithm to solve linear equation by iteration.
+* Attention: Only valid when A is diagonal dominant!
+* Main idea: First convert A to L + U + D (Lower, Upper and Diag). Then calculate $J = -D^{-1}(L+R)$, find the eigenvalue of J and check whether the max absolute value is greater than 1. If so, the iteration will not convergence, you'd better find another algorithm to solve it! 
+* Algorithm: $x_j^{(k+1)} = \frac{1}{a_{jj}}(b_j-\sum_{m\neq j}a_{jm}x_m^{(k)})$
+```python
+def jacobi(A, b, N=1000, x=None):
+    """Solves the equation Ax=b via the Jacobi iterative method."""
+    # Create an initial guess if needed                                                                                                                                                            
+    if x is None:
+        x = zeros(len(A[0]))
+
+    # Create a vector of the diagonal elements of A                                                       
+    # and subtract them from A                                                                                     
+    D = diag(A)
+    R = A - diagflat(D)
+    # Iterate for N times                                                                                         
+    for i in range(N):
+        x_new = (b - dot(R,x)) / D
+        if allclose(x, x_new, rtol=1e-8):
+            break
+        
+        x = x_new
+    return x
+```
+
+### Gauss-Seidel method
+* Main idea:  Gauss-Seidel method is a refinement of the Jacobi method, it converges faster than Jacobi method by introduce the updated value in the same iteration.
+* Algorithm: $x_j^{(k+1)} = \frac{1}{a_{jj}}(b_j-\sum_{m>j}a_{jm}x_m^{(k)}-\sum_{m<j}a_{jm}x_m^{(k+1)})$
+```python
+def Gauss_Seidel(A, b, N=25, x=None, omega=1.5):
+    """Solves the equation Ax=b via the Jacobi iterative method."""
+    # Create an initial guess if needed                                                                                                                                                            
+    if x is None:
+        x = zeros_like(b)
+
+    # Iterate for N times  
+    for it_count in range(N):
+        x_new = zeros_like(x)
+        print("Iteration {0}: {1}".format(it_count, x))
+        for i in range(A.shape[0]):
+            s1 = dot(A[i, :i], x_new[:i])
+            s2 = dot(A[i, i + 1:], x[i + 1:])
+            x_new[i] = (b[i] - s1 - s2) / A[i, i]
+        if allclose(x, x_new, rtol=1e-8):
+            break
+        x = x_new
+    return x
+```
+
 ### Conjugate Gradient Descent Method
 **Method:**   
     Compared to Gradient Descent Method, the descent vector is conjugate with each other. Here conjugate means $u^T A v=v^T A u = 0$, where A is a symmetrical matrix.  
@@ -206,3 +256,54 @@ Call BisectionMethod(A, x1, N, eps)
     $x_{n+1}=x_{n} + \alpha_n p_n, \alpha_n = \frac{r_n^T r_n}{p^T_n A p_n}$  
     $r_{n+1}=r_n - a_n A p_n$  
     p_{n+1}=r_{n+1}+\beta_n p_n, \beta_n = \frac{r_{n+1}^T r_{n+1}}{r_n^T r_n}
+
+### Power method
+* Main idea: Find the largest or smallest eigenvalue by mutiply $A$ or $A^{-1}$ for k times (k>>1). Since $\frac{\lambda_{i}}{\lambda_{max}} < 1$, then $(\frac{\lambda_{i}}{\lambda_{max}})^k \approx 0$
+* Algorithm: $\lambda_{max} = \frac{x^T_kx_{k+1}}{x^T_kx_{k}}$, the same algorithm for $\lambda_{min}$.
+
+```python
+def power(A,x):
+    def rayleigh_quotient(A,x):
+        return np.dot(x, np.dot(A, x))/np.dot(x,x)
+        
+    # function to normalise a vector
+    def normalise(x,eps=1e-10):
+        N = np.sqrt(np.sum(abs(x)**2))
+        if N < eps: # in case it is the zero vector!
+            return x
+        else:
+            return x/N
+
+    RQnew = rayleigh_quotient(A,x)
+    RQold = 0
+
+    # perform the power iteration
+    while np.abs(RQnew-RQold) > 1e-6:
+        RQold = RQnew
+        x = normalise(np.dot(A, x))
+        RQnew = rayleigh_quotient(A, x)
+```
+
+### SOR
+* Main idea: SOR is also a refinement of the Gauss Seidel method, by introducing a parameter $\omega$ to balence the x value between the old and new iteration, SOR can achieve the highest speed among all algorithm introduced above.
+* Algorithm: $x_i^{(k+1)}=(1-\omega)x_i^{(k)}+\frac{\omega}{a_{ii}}\left(b_i-\displaystyle\sum_{j<i}a_{ij}x_j^{(k+1)}-\displaystyle\sum_{j>i}a_{ij}x_j^{(k)}\right)$
+```python
+def SOR(A, b, N=25, x=None, omega=1.5):
+    """Solves the equation Ax=b via the Jacobi iterative method."""
+    # Create an initial guess if needed                                                                                                                                                            
+    if x is None:
+        x = zeros_like(b)
+
+    # Iterate for N times  
+    for it_count in range(N):
+        x_new = zeros_like(x)
+        print("Iteration {0}: {1}".format(it_count, x))
+        for i in range(A.shape[0]):
+            s1 = dot(A[i, :i], x_new[:i])
+            s2 = dot(A[i, i + 1:], x[i + 1:])
+            x_new[i] = (1-omega) * x[i] + omega * (b[i] - s1 - s2) / A[i, i]
+        if allclose(x, x_new, rtol=1e-8):
+            break
+        x = x_new
+    return x
+```
