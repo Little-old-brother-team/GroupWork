@@ -1,51 +1,56 @@
 
 # 1. Review of Computational Physics
+## 1.1. Catalog
 
 <!-- TOC -->
 
 - [1. Review of Computational Physics](#1-review-of-computational-physics)
-  - [1.1. Errors and Uncertainties](#11-errors-and-uncertainties)
-    - [1.1.1. Storage](#111-storage)
-    - [1.1.2. Error](#112-error)
-  - [1.2. Roots](#12-roots)
-    - [1.2.1. Bisection Method](#121-bisection-method)
-    - [1.2.2. Inverse Linear Interpolation](#122-inverse-linear-interpolation)
-    - [1.2.3. Secant Method](#123-secant-method)
-    - [1.2.4. Brute Force Method](#124-brute-force-method)
-    - [1.2.5. Fixed Point Method](#125-fixed-point-method)
-    - [1.2.6. Newton Raphson Method](#126-newton-raphson-method)
-  - [1.3. Matrix](#13-matrix)
-    - [1.3.1. (non-linear) Newton-Raphson Algorithm](#131-non-linear-newton-raphson-algorithm)
-    - [1.3.2. (linear) Gaussian Elimination Method with pivoting](#132-linear-gaussian-elimination-method-with-pivoting)
-    - [1.3.3. (linear tridiagonal) Thomas Method](#133-linear-tridiagonal-thomas-method)
-    - [1.3.4. (linear) Jacobi method](#134-linear-jacobi-method)
-    - [1.3.5. Gauss-Seidel method](#135-gauss-seidel-method)
-    - [1.3.6. Conjugate Gradient Descent Method](#136-conjugate-gradient-descent-method)
-    - [1.3.7. Power method](#137-power-method)
-    - [1.3.8. SOR](#138-sor)
-  - [1.4. Fitting](#14-fitting)
-    - [1.4.1. Least-Square Method](#141-least-square-method)
-    - [1.4.2. Fitting With Uncertainty](#142-fitting-with-uncertainty)
-  - [1.5. Interpolation](#15-interpolation)
-    - [1.5.1. Linear Interpolation](#151-linear-interpolation)
-    - [1.5.2. Polynomial Interpolation](#152-polynomial-interpolation)
-    - [1.5.3. Lagrange Interpolation](#153-lagrange-interpolation)
-    - [1.5.4. Newton Interpolation](#154-newton-interpolation)
-    - [1.5.5. Spline Interpolation](#155-spline-interpolation)
-  - [1.6. Differentiation](#16-differentiation)
-  - [1.7. Integration](#17-integration)
-    - [1.7.1. Trapezoid Rule](#171-trapezoid-rule)
-    - [1.7.2. Midpoint Rule](#172-midpoint-rule)
-    - [1.7.3. Simpson's Rule](#173-simpsons-rule)
-    - [1.7.4. Romberg Integration](#174-romberg-integration)
-    - [1.7.5. Gaussian Quadrature](#175-gaussian-quadrature)
-    - [1.7.6. Improper Integration](#176-improper-integration)
+  - [1.1. Catalog](#11-catalog)
+- [2. Errors and Uncertainties](#2-errors-and-uncertainties)
+  - [2.1. Storage](#21-storage)
+  - [2.2. Error](#22-error)
+- [3. Roots](#3-roots)
+  - [3.1. Bisection Method](#31-bisection-method)
+  - [3.2. Inverse Linear Interpolation](#32-inverse-linear-interpolation)
+  - [3.3. Secant Method](#33-secant-method)
+  - [3.4. Brute Force Method](#34-brute-force-method)
+  - [3.5. Fixed Point Method](#35-fixed-point-method)
+  - [3.6. Newton Raphson Method](#36-newton-raphson-method)
+- [4. Matrix](#4-matrix)
+  - [4.1. (non-linear) Newton-Raphson Algorithm](#41-non-linear-newton-raphson-algorithm)
+  - [4.2. (linear) Gaussian Elimination Method with pivoting](#42-linear-gaussian-elimination-method-with-pivoting)
+  - [4.3. (linear tridiagonal) Thomas Method](#43-linear-tridiagonal-thomas-method)
+  - [4.4. (linear) Jacobi method](#44-linear-jacobi-method)
+  - [4.5. Gauss-Seidel method](#45-gauss-seidel-method)
+  - [4.6. Conjugate Gradient Descent Method](#46-conjugate-gradient-descent-method)
+  - [4.7. Power method](#47-power-method)
+  - [4.8. Jacobi Method(to find eigenvalue and eigenvector)](#48-jacobi-methodto-find-eigenvalue-and-eigenvector)
+  - [4.9. SOR](#49-sor)
+  - [4.10. Inverse of L and U](#410-inverse-of-l-and-u)
+  - [4.11. Cholesky Decomposition](#411-cholesky-decomposition)
+  - [4.12. QR Decomposition](#412-qr-decomposition)
+- [5. Fitting](#5-fitting)
+  - [5.1. Least-Square Method](#51-least-square-method)
+  - [5.2. Fitting With Uncertainty](#52-fitting-with-uncertainty)
+- [6. Interpolation](#6-interpolation)
+  - [6.1. Linear Interpolation](#61-linear-interpolation)
+  - [6.2. Polynomial Interpolation](#62-polynomial-interpolation)
+  - [6.3. Lagrange Interpolation](#63-lagrange-interpolation)
+  - [6.4. Newton Interpolation](#64-newton-interpolation)
+  - [6.5. Spline Interpolation](#65-spline-interpolation)
+- [7. Differentiation](#7-differentiation)
+- [8. Integration](#8-integration)
+  - [8.1. Trapezoid Rule](#81-trapezoid-rule)
+  - [8.2. Midpoint Rule](#82-midpoint-rule)
+  - [8.3. Simpson's Rule](#83-simpsons-rule)
+  - [8.4. Romberg Integration](#84-romberg-integration)
+  - [8.5. Gaussian Quadrature](#85-gaussian-quadrature)
+  - [8.6. Improper Integration](#86-improper-integration)
 
 <!-- /TOC -->
+# 2. Errors and Uncertainties
 
-## 1.1. Errors and Uncertainties
-
-### 1.1.1. Storage
+## 2.1. Storage
 1. Fixed point notation:  
    Fixed decimal point;  
    Same absolute error.  
@@ -54,7 +59,7 @@
    Double: Sign(1) + Exponent(11) + Fraction(52) + Bias(1023)  
    **First mantissa bit is always 1**  
 
-### 1.1.2. Error
+## 2.2. Error
 1. Round off error  
     **From storage limit**.  
     Appear significantly in:
@@ -68,9 +73,9 @@
    **From mathematic approximation**
 
 
-## 1.2. Roots
+# 3. Roots
 
-### 1.2.1. Bisection Method
+## 3.1. Bisection Method
 **Basic Method**
 1. Method:   
     1. search root in $[x_1, x_2]$, and $f(x_1)f(x_2)<0$
@@ -96,7 +101,7 @@
         return mid
     ```
 
-### 1.2.2. Inverse Linear Interpolation
+## 3.2. Inverse Linear Interpolation
 **Improved Bisection Method**
 Method: Change the middle point $\frac{x_1+x_2}{2}$ of Bisection Method to learn prediction $x_2-f(x_2)\frac{x_2-x_1}{f(x_2)-f(x_1)}$.
 ```python
@@ -118,7 +123,7 @@ def InverseLinear(f,left,right,tolerance=1e-8,maxRuns=1000):
     return mid
 ```
 
-### 1.2.3. Secant Method
+## 3.3. Secant Method
 **Can't find a initial bracket**
 Method: Don't need to consider the signs of boundaries. And mid point is the same as Inverse Linear Interpolation, which is $x_2-f(x_2)\frac{x_2-x_1}{f(x_2)-f(x_1)}$. 
 ```python
@@ -143,7 +148,7 @@ def secant(f, x0, x1, eps=1e-5, its=100):
         iteration_counter = -1
     return x, iteration_counter
 ```
-### 1.2.4. Brute Force Method
+## 3.4. Brute Force Method
 1. Method:  
     1. Divide the interval into small segments
     2. Find the segment $[x_1, x_2]$ containing a root
@@ -169,7 +174,7 @@ def secant(f, x0, x1, eps=1e-5, its=100):
                 roots.append(root)
         return roots
     ```
-### 1.2.5. Fixed Point Method
+## 3.5. Fixed Point Method
 1. Method:  
     **Iteration:** $x_n = g(x_{n-1})$ for equation $g(x)-x=0$.
 
@@ -188,7 +193,7 @@ def secant(f, x0, x1, eps=1e-5, its=100):
         return x
     ```
 
-### 1.2.6. Newton Raphson Method
+## 3.6. Newton Raphson Method
 1. Method: 
     **Iteration:** $\Delta x = -\frac{f(x)}{f^\prime (x)}$
 2. Pseudocode and Example: 
@@ -214,9 +219,9 @@ def secant(f, x0, x1, eps=1e-5, its=100):
         return x, iteration_counter
     ```
 
-## 1.3. Matrix
+# 4. Matrix
 
-### 1.3.1. (non-linear) Newton-Raphson Algorithm
+## 4.1. (non-linear) Newton-Raphson Algorithm
 1. Method: **Just a high dimensional Newton method**  
     1. Calculate Jacobi matrix $F^\prime$ of equations $f(x)$.
     2. Solve $\Delta x$ by $F^\prime \Delta x = -f(x)$
@@ -258,7 +263,7 @@ def secant(f, x0, x1, eps=1e-5, its=100):
     print(diff(F1, x1))
     ```
 
-### 1.3.2. (linear) Gaussian Elimination Method with pivoting
+## 4.2. (linear) Gaussian Elimination Method with pivoting
 1. Method: for $Ax=b$  
     1. Reduce matrix $A$ to upper triangular matrix with $b$. Before each elimination try to put a row with largest pivot on the eliminating row. 
     2. Back substitution.
@@ -282,24 +287,37 @@ def secant(f, x0, x1, eps=1e-5, its=100):
    np.linalg.solve(A, b)
    ```
 
-### 1.3.3. (linear tridiagonal) Thomas Method
+## 4.3. (linear tridiagonal) Thomas Method
 **a specialized Gaussian elimination method**
 1. Method: Elimination becomes very easy when the matrix is tridiagonal. Just apply eliminate for one time when reducing a row. 
 2. Pseudocode and Example:
 ```python
-Define Thomas(M, b):
+import numpy as np
+def Thomas(M_init, b_init):
     # reduce to an upper triangular matrix
-    for row i from 1 to n:
-        eliminate row i with row i-1
     
+    M = M_init.copy().astype(np.float64)
+    b = b_init.copy().astype(np.float64)
+    
+    n = M.shape[0]
+    
+    for i in range(1,n):
+        r = M[i,i-1] / M[i-1,i-1]
+        M[i,i-1] = 0
+        M[i,i] = M[i,i] - r * M[i-1,i]
+        if i != n-1:
+            M[i,i+1] = M[i,i+1] - r * M[i-1,i+1]
+        b[i] = b[i] - r * b[i-1]
     # get solution
-    for row i from n to 0:
-        eliminate column i and get solution
+    solution = np.zeros(n)
+    solution[-1] = b[-1] / M[n-1,n-1]
+    for i in range(n-2,-1,-1):
+        solution[i] = ( b[i] - M[i,i+1]* solution[i+1] ) / M[i,i]
 
     return solution
 ```
 
-### 1.3.4. (linear) Jacobi method
+## 4.4. (linear) Jacobi method
 Indirect algorithm to solve linear equation by iteration.
 * Attention: Only valid when A is diagonal dominant!
 * Main idea: First convert A to L + U + D (Lower, Upper and Diag). Then calculate $J = -D^{-1}(L+R)$, find the eigenvalue of J and check whether the max absolute value is greater than 1. If so, the iteration will not convergence, you'd better find another algorithm to solve it! 
@@ -326,7 +344,7 @@ def jacobi(A, b, N=1000, x=None):
     return x
 ```
 
-### 1.3.5. Gauss-Seidel method
+## 4.5. Gauss-Seidel method
 * Main idea:  Gauss-Seidel method is a refinement of the Jacobi method, it converges faster than Jacobi method by introduce the updated value in the same iteration.
 * Algorithm: $x_j^{(k+1)} = \frac{1}{a_{jj}}(b_j-\sum_{m>j}a_{jm}x_m^{(k)}-\sum_{m<j}a_{jm}x_m^{(k+1)})$
 ```python
@@ -353,21 +371,52 @@ def Gauss_Seidel(A, b, N=25, x=None, omega=1.5):
     return x
 ```
 
-### 1.3.6. Conjugate Gradient Descent Method
+## 4.6. Conjugate Gradient Descent Method
 **Method:**   
     Compared to Gradient Descent Method, the descent vector is conjugate with each other. Here conjugate means $u^T A v=v^T A u = 0$, where A is a symmetrical matrix.  
     Problem becomes 
-    $$ 
-    f=\frac{1}{2}x^T A x -b^T x \\
-    \Delta f = Ax -b =0
-    $$
+    $$    f=\frac{1}{2}x^T A x -b^T x $$$$
+    \Delta f = Ax -b =0    $$
     Residue: $r_k=b-Ax_k=-\Delta f(x_k)$  
     **Iteration:**  
     $x_{n+1}=x_{n} + \alpha_n p_n, \alpha_n = \frac{r_n^T r_n}{p^T_n A p_n}$  
     $r_{n+1}=r_n - a_n A p_n$  
     $p_{n+1}=r_{n+1}+\beta_n p_n, \beta_n = \frac{r_{n+1}^T r_{n+1}}{r_n^T r_n}$
 
-### 1.3.7. Power method
+```python
+#非老师给的代码，但加强了一波，适用于厄米矩阵(原先只适用于对称（实）矩阵)
+def conjugate_gradient(A, b, x=None):
+    n = len(b)
+    if not x:
+        x = np.ones(n)
+
+    x = x
+    r = b - dot(A,x)
+    p = r
+    
+    for i in range(2*n):
+        rAr = np.dot(np.conj(r),np.dot(A,r))
+        Ap = np.dot(A,p)
+        alpha = rAr / np.dot( np.conj(Ap) , Ap )
+        
+        x = x + alpha * p
+        r = r - alpha * Ap
+
+        rAr_plus_one = np.dot( np.conj(r) ,np.dot(A,r))
+        beta = rAr_plus_one / rAr
+
+        
+        if abs(np.linalg.norm(r)) < 1e-5:
+            print(alpha)
+            print(p)
+            break
+
+        p = r + beta * p
+
+    return x
+```
+
+## 4.7. Power method
 * Main idea: Find the largest or smallest eigenvalue by mutiply $A$ or $A^{-1}$ for k times (k>>1). Since $\frac{\lambda_{i}}{\lambda_{max}} < 1$, then $(\frac{\lambda_{i}}{\lambda_{max}})^k \approx 0$
 * Algorithm: $\lambda_{max} = \frac{x^T_kx_{k+1}}{x^T_kx_{k}}$, the same algorithm for $\lambda_{min}$.
 
@@ -398,7 +447,14 @@ def power(A,x):
   eig_value, eig_vector = np.linalg.eig(A)
   ```
 
-### 1.3.8. SOR
+## 4.8. Jacobi Method(to find eigenvalue and eigenvector)
+* Main idea: eliminate the largest element with rotation matrix $$R = \left[\begin{matrix}\cos\phi&\sin\phi \\-\sin\phi &\cos\phi \end{matrix}\right]$$over and over again nitil convergence (if possible).
+* $\cdots R_2R_1AR_1^{-1}R_{2}^{-1}\cdots = RAR^{-1}=\left[\begin{matrix}\lambda_1\\&\ddots\\&&\lambda_N \end{matrix}\right]$
+* eigenvalue: $\lambda_1,\lambda_2,\cdots,\lambda_N$
+* eigenvector: $AR^{-1}=R^{-1}\lambda$, the eigenvectors are columns of $R^{-1}$
+
+
+## 4.9. SOR
 * Main idea: SOR is also a refinement of the Gauss Seidel method, by introducing a parameter $\omega$ to balence the x value between the old and new iteration, SOR can achieve the highest speed among all algorithm introduced above.
 * Algorithm: $x_i^{(k+1)}=(1-\omega)x_i^{(k)}+\frac{\omega}{a_{ii}}\left(b_i-\displaystyle\sum_{j<i}a_{ij}x_j^{(k+1)}-\displaystyle\sum_{j>i}a_{ij}x_j^{(k)}\right)$
 ```python
@@ -423,38 +479,85 @@ def SOR(A, b, N=25, x=None, omega=1.5):
     return x
 ```
 
-## 1.4. Fitting
+## 4.10. Inverse of L and U
+$L D = I$,$$
+L = \left[\begin{matrix}1\\l_{21}&1\\l_{31}&l_{32}&1\\l_{41}&l_{42}&l_{43}&1\end{matrix}\right]
+$$$$d_{jk}=-l_{jk}-\sum_{m=1}^{j-1}l_{jm}d_{mk}\qquad(j>k)$$
+$U E=I$,
+$$U = \left[\begin{matrix}u_{11}&u_{12}&u_{13}&u_{14}\\&u_{22}&u_{23}&u_{24}\\&&u_{33}&u_{34}\\&&&u_{44}\end{matrix}\right]$$$$e_{kk} = \frac{1}{u_{kk}},e_{jk}=-\frac{1}{u_{kk}}\sum_{m=j+1}^{k-1}e_{jm}u_{mk}(j<k)$$
 
-### 1.4.1. Least-Square Method
+## 4.11. Cholesky Decomposition
+$A = LL^T$
+$$
+\begin{aligned}
+&\begin{pmatrix}
+a_{11} & a_{12} & a_{13}\\
+a_{12} & a_{22} & a_{23}\\
+a_{13} & a_{32} & a_{33}%
+\end{pmatrix}  = \begin{pmatrix}
+l_{11} & 0 & 0\\
+l_{21} & l_{22} & 0\\
+l_{31} & l_{32} & l_{33}%
+\end{pmatrix}\begin{pmatrix}
+l_{11} & l_{21} & l_{31}\\
+0 & l_{22} & l_{32}\\
+0 & 0 & l_{33}%
+\end{pmatrix} \\
+&  =\begin{pmatrix}
+l_{11}^{2} & l_{11}l_{21} & l_{11}l_{31}\\
+l_{21}l_{11} & l_{21}^{2}+l_{22}^{2} & l_{21}l_{31}+l_{22}l_{32}\\
+l_{31}l_{11} & l_{21}l_{31}+l_{22}l_{32} & l_{31}^{2}+l_{32}^{2}+l_{33}^{2}%
+\end{pmatrix}\\
+&l_{jj}=\sqrt{a_{jj}-\displaystyle\sum_{k=1}^{k<j} l_{jk}^2},\quad 
+l_{jk}=\frac{a_{jk}-\displaystyle\sum_{m=1}^{m<k}l_{jm}l_{km}}{l_{jj}}, \;( j>k)
+\end{aligned}
+$$
 
-### 1.4.2. Fitting With Uncertainty
+## 4.12. QR Decomposition
+
+for $m>n$ 
+$$
+A=\underbrace{Q_{m\times m}}_{\text{orthogonal}}\underbrace{R_{m\times n}}_{\text{upper trigular}}%
+$$$$
+\underbrace{R}_{\text{upper trigular}}=Q_{n-1}\cdots Q_{2}Q_{1}A$$$$
+A  =\left(  Q_{n-1}\cdots Q_{2}Q_{1}\right)  ^{-1}R =\underbrace{\left(  Q_{1}^{T}Q_{2}^{T}\cdots Q_{n}^{T}\right)  }_{Q}R
+$$
+**Gram-Schmidt Process**
+
+**Householder Reflection**
+
+# 5. Fitting
+
+## 5.1. Least-Square Method
+
+## 5.2. Fitting With Uncertainty
 Chi-square
 
-## 1.5. Interpolation
+# 6. Interpolation
 
-### 1.5.1. Linear Interpolation
+## 6.1. Linear Interpolation
 
-### 1.5.2. Polynomial Interpolation
+## 6.2. Polynomial Interpolation
 Vandermonde matrix
 
-### 1.5.3. Lagrange Interpolation
+## 6.3. Lagrange Interpolation
 
-### 1.5.4. Newton Interpolation
+## 6.4. Newton Interpolation
 
-### 1.5.5. Spline Interpolation
+## 6.5. Spline Interpolation
 
-## 1.6. Differentiation
+# 7. Differentiation
 
-## 1.7. Integration
+# 8. Integration
 
-### 1.7.1. Trapezoid Rule
+## 8.1. Trapezoid Rule
 
-### 1.7.2. Midpoint Rule
+## 8.2. Midpoint Rule
 
-### 1.7.3. Simpson's Rule
+## 8.3. Simpson's Rule
 
-### 1.7.4. Romberg Integration
+## 8.4. Romberg Integration
 
-### 1.7.5. Gaussian Quadrature
+## 8.5. Gaussian Quadrature
 
-### 1.7.6. Improper Integration
+## 8.6. Improper Integration
