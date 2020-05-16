@@ -189,6 +189,8 @@ def Newton_system(F, J, x, eps):
     return x, iteration_counter
 
 from sympy import *
+
+# f = lambda [x0, x1]: [F0(x0, x1), F1(x0, x1)]
 x0, x1 = symbols('x0 x1')
 F0 = x0**2 - x1 + x0*cos(pi*x0)
 F1 = x0*x1 + exp(-x1) - x0**(-1)
@@ -222,7 +224,7 @@ Define Elimination(M, b):
 **a specialized Gaussian elimination method**
 1. Method: Elimination becomes very easy when the matrix is tridiagonal. Just apply eliminate for one time when reducing a row. 
 2. Pseudocode and Example:
-```
+```python
 Define Thomas(M, b):
     # reduce to an upper triangular matrix
     for row i from 1 to n:
@@ -235,55 +237,27 @@ Define Thomas(M, b):
     return solution
 ```
 
-### (linear) Jacobi Method
-**high dimensional fixed-point method**
-1. Method:
-    1. Split the given matrix $A$ by 
-    $$
-    A=D+L+R
-    $$
-    where $D$ is a diagonal matrix, $L$ and $R$ are left and right part of the matrix.  
-    **Iteration:**  
-    $$
-    D(x^{k+1}-x^k)=b-Ax^k
-    $$
-    which is:
-    $$
-    \Delta x=D^{-1}(b-(L+R)x)
-    $$
-1. Pseudocode and Example:
-```
-Define A
-Define FixedPointMethod(A, x1, N, target):
-    split A to D, L, R
-    Repeat N times or until error < target:
-        x1 = D^(-1) * (b - (L + R) * x1)
-    return x1
-
-Find x1
-Call BisectionMethod(A, x1, N, eps)
-```
-
-### Jacobi method
+### (linear) Jacobi method
 Indirect algorithm to solve linear equation by iteration.
 * Attention: Only valid when A is diagonal dominant!
 * Main idea: First convert A to L + U + D (Lower, Upper and Diag). Then calculate $J = -D^{-1}(L+R)$, find the eigenvalue of J and check whether the max absolute value is greater than 1. If so, the iteration will not convergence, you'd better find another algorithm to solve it! 
 * Algorithm: $x_j^{(k+1)} = \frac{1}{a_{jj}}(b_j-\sum_{m\neq j}a_{jm}x_m^{(k)})$
 ```python
+from numpy import diag, allcose
 def jacobi(A, b, N=1000, x=None):
     """Solves the equation Ax=b via the Jacobi iterative method."""
-    # Create an initial guess if needed                                                                                                                                                            
+    # Create an initial guess if needed
     if x is None:
         x = zeros(len(A[0]))
 
-    # Create a vector of the diagonal elements of A                                                       
-    # and subtract them from A                                                                                     
+    # Create a vector of the diagonal elements of A   
+    # and subtract them from A       
     D = diag(A)
     R = A - diagflat(D)
-    # Iterate for N times                                                                                         
+    # Iterate for N times      
     for i in range(N):
         x_new = (b - dot(R,x)) / D
-        if allclose(x, x_new, rtol=1e-8):
+        if allclose(x, x_new, rtol=1e-8): # compare
             break
         
         x = x_new
@@ -294,9 +268,12 @@ def jacobi(A, b, N=1000, x=None):
 * Main idea:  Gauss-Seidel method is a refinement of the Jacobi method, it converges faster than Jacobi method by introduce the updated value in the same iteration.
 * Algorithm: $x_j^{(k+1)} = \frac{1}{a_{jj}}(b_j-\sum_{m>j}a_{jm}x_m^{(k)}-\sum_{m<j}a_{jm}x_m^{(k+1)})$
 ```python
+from numpy import zeros_like, allclose
 def Gauss_Seidel(A, b, N=25, x=None, omega=1.5):
-    """Solves the equation Ax=b via the Jacobi iterative method."""
-    # Create an initial guess if needed                                                                                                                                                            
+    """
+    Solves the equation Ax=b via the Jacobi iterative method.
+    """
+    # Create an initial guess if needed  
     if x is None:
         x = zeros_like(b)
 
@@ -326,7 +303,7 @@ def Gauss_Seidel(A, b, N=25, x=None, omega=1.5):
     **Iteration:**  
     $x_{n+1}=x_{n} + \alpha_n p_n, \alpha_n = \frac{r_n^T r_n}{p^T_n A p_n}$  
     $r_{n+1}=r_n - a_n A p_n$  
-    p_{n+1}=r_{n+1}+\beta_n p_n, \beta_n = \frac{r_{n+1}^T r_{n+1}}{r_n^T r_n}
+    $p_{n+1}=r_{n+1}+\beta_n p_n, \beta_n = \frac{r_{n+1}^T r_{n+1}}{r_n^T r_n}$
 
 ### Power method
 * Main idea: Find the largest or smallest eigenvalue by mutiply $A$ or $A^{-1}$ for k times (k>>1). Since $\frac{\lambda_{i}}{\lambda_{max}} < 1$, then $(\frac{\lambda_{i}}{\lambda_{max}})^k \approx 0$
