@@ -1,4 +1,26 @@
-# Mid Term Review
+<!-- TOC -->
+
+- [1 Errors and Uncertainties](#1-errors-and-uncertainties)
+  - [Storage](#storage)
+  - [Error](#error)
+- [2 Roots](#2-roots)
+  - [Bisection Method](#bisection-method)
+  - [Inverse Linear Interpolation](#inverse-linear-interpolation)
+  - [Secant Method](#secant-method)
+  - [Brute Force Method](#brute-force-method)
+  - [Fixed Point Method](#fixed-point-method)
+  - [Newton Raphson Method](#newton-raphson-method)
+- [Matrix](#matrix)
+  - [(non-linear) Newton-Raphson Algorithm](#non-linear-newton-raphson-algorithm)
+  - [(linear) Gaussian Elimination Method with pivoting](#linear-gaussian-elimination-method-with-pivoting)
+  - [(linear tridiagonal) Thomas Method](#linear-tridiagonal-thomas-method)
+  - [(linear) Jacobi method](#linear-jacobi-method)
+  - [Gauss-Seidel method](#gauss-seidel-method)
+  - [Conjugate Gradient Descent Method](#conjugate-gradient-descent-method)
+  - [Power method](#power-method)
+  - [SOR](#sor)
+
+<!-- /TOC -->
 
 ## 1 Errors and Uncertainties
 
@@ -35,23 +57,23 @@
     3. repeat 1. and 2., until reach the target
 
 2. Pseudocode and Example: 
-```python
-def bisection(f,left,right,tolerance=1e-8,maxRuns=1000):
-    its = 0
-    while abs(right-left) > tolerance and its < maxRuns:
-        mid = (left + right) / 2
-        if f(mid) == 0:
-            break
-        else:
-            if f(mid)*f(right) < 0:
-                left = mid
+    ```python
+    def bisection(f,left,right,tolerance=1e-8,maxRuns=1000):
+        its = 0
+        while abs(right-left) > tolerance and its < maxRuns:
+            mid = (left + right) / 2
+            if f(mid) == 0:
+                break
             else:
-                right = mid
-        its = its + 1
-        if its == maxRuns:
-            print('Reach the max run.') 
-    return mid
-```
+                if f(mid)*f(right) < 0:
+                    left = mid
+                else:
+                    right = mid
+            its = its + 1
+            if its == maxRuns:
+                print('Reach the max run.') 
+        return mid
+    ```
 
 ### Inverse Linear Interpolation
 **Improved Bisection Method**
@@ -106,53 +128,70 @@ def secant(f, x0, x1, eps=1e-5, its=100):
     2. Find the segment $[x_1, x_2]$ containing a root
     3. Final result: $x_2-f(x_2)\frac{x_2-x_1}{f(x_2)-f(x_1)}$
 2. Pseudocode and Example: 
-```python
-Define F(x)
-Define BruteForceMethod(F, x1, x2, n):
-    divide [x1, x2] into segments [x1, x2, x3 ... xn]
-    while F(xi) * F(xj) > 0:
-        ++ i
-        ++ j
-
-    return xj - F(xj) * (xj - xi) / (F(xj) - F(xi))
-
-Find x1, x2 
-Call BisectionMethod(F, x1, x2, n)
-```
-
+    ```python
+    def brute_force_root_finder(f, a, b, n):
+        from numpy import linspace
+        x = linspace(a, b, n)
+        y = f(x)
+        
+        #plt.plot(x,y,'r-', label = 'zero of f(x)',lw=2, marker='s', ms=2)     
+            # square size 10
+        #plt.axhline(y=0)
+        
+        roots = []
+        for i in range(n-1):
+            if y[i]*y[i+1] < 0:
+                root = x[i] - (x[i+1] - x[i])/(y[i+1] - y[i])*y[i]
+                roots.append(root)
+            elif y[i] == 0:
+                root = x[i]
+                roots.append(root)
+        return roots
+    ```
 ### Fixed Point Method
 1. Method:  
-    **Iteration:** $x_n = F(x_{n-1})$ for equation $F(x)-x=0$.
+    **Iteration:** $x_n = g(x_{n-1})$ for equation $g(x)-x=0$.
 
 2. Pseudocode and Example:  
     find solution of $F(x) = x$:
-```python
-def FixedPointMethod(F, x1, N=100, eps=1e-5):
-    its = 0
-    last_x = x1-1
-    x = x1
-    while its < N and abs(last_x-x) > eps:
-        x = F(x)
-        its = its + 1
-        if its == N:
-            print('Reach the max run.') 
-    return x
-```
+    ```python
+    def FixedPointMethod(F, x1, N=100, eps=1e-5):
+        its = 0
+        last_x = x1-1
+        x = x1
+        while its < N and abs(last_x-x) > eps:
+            x = F(x)
+            its = its + 1
+            if its == N:
+                print('Reach the max run.') 
+        return x
+    ```
 
 ### Newton Raphson Method
 1. Method: 
     **Iteration:** $\Delta x = -\frac{f(x)}{f^\prime (x)}$
 2. Pseudocode and Example: 
-```python
-Define F(x), F_prime(x)
-Define NewtonMethod(F, F_prime, x1, target):
-    Repeat N times or until error < target:
-        x -= F(x)/F_prime(x)
-    return x
+    ```python
+    import sys
 
-Find x1
-Call BisectionMethod(F, F_prime, x1, eps)
-```
+    def Newton(f, dfdx, x, eps):
+        f_value = f(x)
+        iteration_counter = 0
+        while abs(f_value) > eps and iteration_counter < 100:
+            try:
+                x = x - f_value/dfdx(x)
+            except ZeroDivisionError:
+                print('Error! - derivative zero for x = ', x)
+                sys.exit(1)     # Abort with error
+
+            f_value = f(x)
+            iteration_counter = iteration_counter + 1
+
+        # Here, either a solution is found, or too many iterations
+        if abs(f_value) > eps:
+            iteration_counter = -1
+        return x, iteration_counter
+    ```
 
 ## Matrix
 
@@ -161,64 +200,62 @@ Call BisectionMethod(F, F_prime, x1, eps)
     1. Calculate Jacobi matrix $F^\prime$ of equations $f(x)$.
     2. Solve $\Delta x$ by $F^\prime \Delta x = -f(x)$
 2. Pseudocode and Example: 
-```python
-def Newton_system(F, J, x, eps):
-    """
-    Solve nonlinear system F=0 by Newton’s method.
-    J is the Jacobian of F. Both F and J must be functions of x.
-    At input, x holds the start value. The iteration continues
-    until ||F|| < eps.
-    """
-    
-    F_value = F(x)
-    
-    F_norm = np.linalg.norm(F_value, ord=2) # l2 norm of vector
-    
-    iteration_counter = 0
-    
-    while abs(F_norm) > eps and iteration_counter < 100:
-        delta = np.linalg.solve(J(x), -F_value)    # J(x) delta = -F
-        x = x + delta
-        F_value = F(x)
-        F_norm = np.linalg.norm(F_value, ord=2)
-        iteration_counter = iteration_counter + 1
+    ```python
+    def Newton_system(F, J, x, eps):
+        """
+        Solve nonlinear system F=0 by Newton’s method.
+        J is the Jacobian of F. Both F and J must be functions of x.
+        At input, x holds the start value. The iteration continues
+        until ||F|| < eps.
+        """
         
-    # Here, either a solution is found, or too many iterations
-    if abs(F_norm) > eps:
-        iteration_counter = -1
-    return x, iteration_counter
+        F_value = F(x)
+        
+        F_norm = np.linalg.norm(F_value, ord=2) # l2 norm of vector
+        
+        iteration_counter = 0
+        
+        while abs(F_norm) > eps and iteration_counter < 100:
+            delta = np.linalg.solve(J(x), -F_value)    # J(x) delta = -F
+            x = x + delta
+            F_value = F(x)
+            F_norm = np.linalg.norm(F_value, ord=2)
+            iteration_counter = iteration_counter + 1
+            
+        # Here, either a solution is found, or too many iterations
+        if abs(F_norm) > eps:
+            iteration_counter = -1
+        return x, iteration_counter
 
-from sympy import *
-
-# f = lambda [x0, x1]: [F0(x0, x1), F1(x0, x1)]
-x0, x1 = symbols('x0 x1')
-F0 = x0**2 - x1 + x0*cos(pi*x0)
-F1 = x0*x1 + exp(-x1) - x0**(-1)
-print(diff(F0, x0))
-print(diff(F0, x1))
-print(diff(F1, x0))
-print(diff(F1, x1))
-```
+    from sympy import *
+    x0, x1 = symbols('x0 x1')
+    F0 = x0**2 - x1 + x0*cos(pi*x0)
+    F1 = x0*x1 + exp(-x1) - x0**(-1)
+    print(diff(F0, x0))
+    print(diff(F0, x1))
+    print(diff(F1, x0))
+    print(diff(F1, x1))
+    ```
 
 ### (linear) Gaussian Elimination Method with pivoting
 1. Method: for $Ax=b$  
     1. Reduce matrix $A$ to upper triangular matrix with $b$. Before each elimination try to put a row with largest pivot on the eliminating row. 
     2. Back substitution.
 2. Pseudocode and Example:
-```python
-Define Elimination(M, b):
-    # reduce to an upper triangular matrix
-    for row i from 0 to n:
-        exchange the row with largest pivot to row i
-        for row j from i to n:
-            eliminate row j with row i
-    
-    # get solution
-    for row i from n to 0:
-        eliminate column i and get solution
+    ```python
+    Define Elimination(M, b):
+        # reduce to an upper triangular matrix
+        for row i from 0 to n:
+            exchange the row with largest pivot to row i
+            for row j from i to n:
+                eliminate row j with row i
+        
+        # get solution
+        for row i from n to 0:
+            eliminate column i and get solution
 
-    return solution
-```
+        return solution
+    ```
 
 ### (linear tridiagonal) Thomas Method
 **a specialized Gaussian elimination method**
