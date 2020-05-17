@@ -584,6 +584,23 @@ $$f(x) = a_0f_0(x)+a_1f_1(x)+\cdots+a_mf_m{x}=\sum_{j=1}^ma_jf_j(x)$$
 - this is a special case of **Fitting Linear Forms**, just take $f_j(x)=x^j,j=0,1,2,\cdots,m$. Then $$A_{jk}=\sum_{i=1}^Nx_i^{j+k},b_k=\sum_{i=i}^Nx_i^ky_i$$
 - $$A=\left(\begin{matrix}n&\sum x_i&\sum x_i^2&\cdots&\sum x_i^m\\\sum x_i&\sum x_i^2&\cdots &\sum x_i^m &\sum x_i^{m+1}\\\vdots&\vdots&\vdots&\ddots &\vdots\\\sum x_i^m&\sum x_i^{m+1}&\sum x_i^{m+2}&\cdots&\sum x_i^{2m}\end{matrix}\right),b=\left(\begin{matrix}\sum y_i\\\sum x_i y_i\\\vdots\\\sum x_i^my_i\end{matrix}\right)$$ 
 
+code by ZX
+```python
+import numpy as np
+def poly_fit(x,y,N):
+    """
+    Polynomial Regression with N-th order polynomial 
+    in form a0 + a1 * x + a2 * x^2 + ... + am * x^m
+    return [a0,a1,...,am]
+    """
+    A = np.zeros((N+1,N+1))
+    b = np.zeros(N+1)
+    for j in range(N+1):
+        for k in range(N+1):
+            A[j,k] = np.sum(x**(j+k))
+        b[j] = np.sum(y*x**j)
+    return np.linalg.solve(A,b)
+```
 ## 5.5. Fitting with scipy
 ```python
 from scipy.optimize import curve_fit
