@@ -555,6 +555,25 @@ $$
 ## 5.2. Fitting With Uncertainty
 Chi-square
 
+## 5.3. Fitting with scipy
+```python
+from scipy.optimize import curve_fit
+# Fitting with curve_fit
+# An example of week8 question4.
+def oscDecay(t, A, B, C, tau, omega):
+    return A*(1 + B*np.cos(omega*t))*np.exp(-t**2/(2*tau**2)) + C
+
+# fit data using SciPy's Levenberg Marquart method
+A0, B0, C0, tau0, omega0 = 25,0.36,8,25,0.77  # use the guessed data in (1) as initialization.
+nlfit, nlpcov = curve_fit(oscDecay,t,dt,p0=[A0, B0, C0, tau0, omega0],sigma=uncertainty)
+A, B, C, tao, omega = nlfit  # get the optimized parameter
+dA, dB, dC, dtao, domega = [np.sqrt(nlpcov[j, j]) for j in range(nlfit.size)]
+dt_fit = oscDecay(t, A, B, C, tau, omega)  # estimate with the optimized parameter
+
+# Calculate residuals and reduced chi squared
+resids = dt - dt_fit
+redchisqr = ((resids / uncertainty) ** 2).sum() #/ float(f.size - 6)
+```
 # 6. Interpolation
 
 ## 6.1. Linear Interpolation
@@ -563,9 +582,51 @@ Chi-square
 Vandermonde matrix
 
 ## 6.3. Lagrange Interpolation
+```python
+from numpy import array, dot
+def lagrange(x, i, xData):
+    """
+    Evaluates the i-th Lagrange polynomial at x
+    based on grid data xData
+    """
+    n = len(xData) - 1
+    lagrpoly = 1.
+    for idx in range (n+1):
+        if idx != i:
+            lagrpoly *= ( x - xData[idx] ) / ( xData[i] - xData[idx])
+    return lagrpoly
 
+def lagrange_interpolation(x, xData, yData):
+    """
+    Lagrange interpolation at x
+    """
+    n = len(xData) - 1
+    lagrpoly = array([lagrange(x,i,xData) for i in range(n+1)])
+    y = dot(yData, lagrpoly)
+    return y
+```
 ## 6.4. Newton Interpolation
+```python
+def newton_eval(xData, yData, x):
+    
+    def newton_coeff(xData, yData):
+        # determine the coefficients of Newton polynomials
+        a = yData.copy()
+        m = len(xData)
+        for k in range(1,m):  # m=n+1: number of data points
+            for i in range(k,m):
+                a[i] = (a[i] - a[k-1])/(xData[i] - xData[k-1])
+        return a
 
+    # determine the interpolation value at x
+    a = newton_coeff(xData,yData)
+    m = len(xData)
+    n = m - 1
+    p = a[n]
+    for k in range(1,m):
+        p = a[n-k] + (x - xData[n-k])*p
+    return p
+```
 ## 6.5. Spline Interpolation
 
 # 7. Differentiation
