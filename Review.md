@@ -5,47 +5,49 @@
 <!-- TOC -->
 
 - [1. Review of Computational Physics](#1-review-of-computational-physics)
-  - [1.1. Catalog](#11-catalog)
+    - [1.1. Catalog](#11-catalog)
 - [2. Errors and Uncertainties](#2-errors-and-uncertainties)
-  - [2.1. Storage](#21-storage)
-  - [2.2. Error](#22-error)
+    - [2.1. Storage](#21-storage)
+    - [2.2. Error](#22-error)
 - [3. Roots](#3-roots)
-  - [3.1. Bisection Method](#31-bisection-method)
-  - [3.2. Inverse Linear Interpolation](#32-inverse-linear-interpolation)
-  - [3.3. Secant Method](#33-secant-method)
-  - [3.4. Brute Force Method](#34-brute-force-method)
-  - [3.5. Fixed Point Method](#35-fixed-point-method)
-  - [3.6. Newton Raphson Method](#36-newton-raphson-method)
+    - [3.1. Bisection Method](#31-bisection-method)
+    - [3.2. Inverse Linear Interpolation](#32-inverse-linear-interpolation)
+    - [3.3. Secant Method](#33-secant-method)
+    - [3.4. Brute Force Method](#34-brute-force-method)
+    - [3.5. Fixed Point Method](#35-fixed-point-method)
+    - [3.6. Newton Raphson Method](#36-newton-raphson-method)
 - [4. Matrix](#4-matrix)
-  - [4.1. (non-linear) Newton-Raphson Algorithm](#41-non-linear-newton-raphson-algorithm)
-  - [4.2. (linear) Gaussian Elimination Method with pivoting](#42-linear-gaussian-elimination-method-with-pivoting)
-  - [4.3. (linear tridiagonal) Thomas Method](#43-linear-tridiagonal-thomas-method)
-  - [4.4. (linear) Jacobi method](#44-linear-jacobi-method)
-  - [4.5. Gauss-Seidel method](#45-gauss-seidel-method)
-  - [4.6. Conjugate Gradient Descent Method](#46-conjugate-gradient-descent-method)
-  - [4.7. Power method](#47-power-method)
-  - [4.8. Jacobi Method(to find eigenvalue and eigenvector)](#48-jacobi-methodto-find-eigenvalue-and-eigenvector)
-  - [4.9. SOR](#49-sor)
-  - [4.10. Inverse of L and U](#410-inverse-of-l-and-u)
-  - [4.11. Cholesky Decomposition](#411-cholesky-decomposition)
-  - [4.12. QR Decomposition](#412-qr-decomposition)
+    - [4.1. (non-linear) Newton-Raphson Algorithm](#41-non-linear-newton-raphson-algorithm)
+    - [4.2. (linear) Gaussian Elimination Method with pivoting](#42-linear-gaussian-elimination-method-with-pivoting)
+    - [4.3. (linear tridiagonal) Thomas Method](#43-linear-tridiagonal-thomas-method)
+    - [4.4. (linear) Jacobi method](#44-linear-jacobi-method)
+    - [4.5. Gauss-Seidel method](#45-gauss-seidel-method)
+    - [4.6. Conjugate Gradient Descent Method](#46-conjugate-gradient-descent-method)
+    - [4.7. Power method](#47-power-method)
+    - [4.8. Jacobi Method(to find eigenvalue and eigenvector)](#48-jacobi-methodto-find-eigenvalue-and-eigenvector)
+    - [4.9. SOR](#49-sor)
+    - [4.10. Inverse of L and U](#410-inverse-of-l-and-u)
+    - [4.11. Cholesky Decomposition](#411-cholesky-decomposition)
+    - [4.12. QR Decomposition](#412-qr-decomposition)
 - [5. Fitting](#5-fitting)
-  - [5.1. Least-Square Method](#51-least-square-method)
-  - [5.2. Fitting With Uncertainty](#52-fitting-with-uncertainty)
+    - [5.1. Least-Square](#51-least-square)
+    - [5.2. Fitting With Uncertainty](#52-fitting-with-uncertainty)
+    - [5.3. Fitting Linear Forms](#53-fitting-linear-forms)
+    - [5.4. Polynomial Regression](#54-polynomial-regression)
 - [6. Interpolation](#6-interpolation)
-  - [6.1. Linear Interpolation](#61-linear-interpolation)
-  - [6.2. Polynomial Interpolation](#62-polynomial-interpolation)
-  - [6.3. Lagrange Interpolation](#63-lagrange-interpolation)
-  - [6.4. Newton Interpolation](#64-newton-interpolation)
-  - [6.5. Spline Interpolation](#65-spline-interpolation)
+    - [6.1. Linear Interpolation](#61-linear-interpolation)
+    - [6.2. Polynomial Interpolation](#62-polynomial-interpolation)
+    - [6.3. Lagrange Interpolation](#63-lagrange-interpolation)
+    - [6.4. Newton Interpolation](#64-newton-interpolation)
+    - [6.5. Spline Interpolation](#65-spline-interpolation)
 - [7. Differentiation](#7-differentiation)
 - [8. Integration](#8-integration)
-  - [8.1. Trapezoid Rule](#81-trapezoid-rule)
-  - [8.2. Midpoint Rule](#82-midpoint-rule)
-  - [8.3. Simpson's Rule](#83-simpsons-rule)
-  - [8.4. Romberg Integration](#84-romberg-integration)
-  - [8.5. Gaussian Quadrature](#85-gaussian-quadrature)
-  - [8.6. Improper Integration](#86-improper-integration)
+    - [8.1. Trapezoid Rule](#81-trapezoid-rule)
+    - [8.2. Midpoint Rule](#82-midpoint-rule)
+    - [8.3. Simpson's Rule](#83-simpsons-rule)
+    - [8.4. Romberg Integration](#84-romberg-integration)
+    - [8.5. Gaussian Quadrature](#85-gaussian-quadrature)
+    - [8.6. Improper Integration](#86-improper-integration)
 
 <!-- /TOC -->
 # 2. Errors and Uncertainties
@@ -550,10 +552,36 @@ $$
 
 # 5. Fitting
 
-## 5.1. Least-Square Method
+## 5.1. Least-Square 
+* main idea: assume the model function is $f(x;a_1,\cdots,a_m)$, then to find $a$s minimized the value $$S(a_1,\cdots,a_m)=\sum_{i=1}^N(y_i-f(x_i;a_1,\cdots,a_m))^2=\sum_{i=1}^Nr_i^2$$ 
+
+for Straight-Line Regression
+```python
+def lineFit(x, y):
+    '''
+    Returns slope and y-intercept of linear fit to (x,y)
+    data set
+    '''
+    xavg = x.mean()
+    slope = (y * (x-xavg)).sum()/(x * (x-xavg)).sum()
+    yint = y.mean() - slope*xavg
+    return slope, yint
+```
 
 ## 5.2. Fitting With Uncertainty
-Chi-square
+* this time fit the data with with error, define $$\chi^2=\sum_{i=1}^N\frac{(y_i-f(x_i,a_1,\cdots,a_m))^2}{\sigma_i^2}$$
+
+## 5.3. Fitting Linear Forms
+$$f(x) = a_0f_0(x)+a_1f_1(x)+\cdots+a_mf_m{x}=\sum_{j=1}^ma_jf_j(x)$$
+- minimizing $S$ yields
+  $$S = \sum_{i=1}^{N}\left[y_i-\sum_{j=1}^ma_jf_j(x)\right]^2$$
+  $\frac{\partial S}{\partial a_k}=0,k = 0,\cdots,m$
+  $$\sum_{j=0}^m\left[\sum_{i=1}^Nf_{j}(x_i)f_k(x_i)\right]a_j=\sum_{i=1}^Nf_k(x_i)y_i$$
+  in matrix form:$$Aa=b$$  $$A_{kj}=\sum_{i=1}^Nf_j(x_i)f_k(x_i), b_k=\sum_{i=1}^Nf_k(x_i)y_i$$
+
+## 5.4. Polynomial Regression
+- this is a special case of **Fitting Linear Forms**, just take $f_j(x)=x^j,j=0,1,2,\cdots,m$. Then $$A_{jk}=\sum_{i=1}^Nx_i^{j+k},b_k=\sum_{i=i}^Nx_i^ky_i$$
+- $$A=\left(\begin{matrix}n&\sum x_i&\sum x_i^2&\cdots&\sum x_i^m\\\sum x_i&\sum x_i^2&\cdots &\sum x_i^m &\sum x_i^{m+1}\\\vdots&\vdots&\vdots&\ddots &\vdots\\\sum x_i^m&\sum x_i^{m+1}&\sum x_i^{m+2}&\cdots&\sum x_i^{2m}\end{matrix}\right),b=\left(\begin{matrix}\sum y_i\\\sum x_i y_i\\\vdots\\\sum x_i^my_i\end{matrix}\right)$$ 
 
 # 6. Interpolation
 
