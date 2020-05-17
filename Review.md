@@ -628,7 +628,15 @@ def newton_eval(xData, yData, x):
     return p
 ```
 ## 6.5. Spline Interpolation
-
+```python
+from scipy.interpolate import CubicSpline
+# Solve with scipy
+# natural boundary condition
+cs = CubicSpline(E, f, bc_type='natural')
+xs = np.linspace(E[0],E[-1])
+plt.plot(xs,cs(xs))
+plt.scatter(E,f)
+```
 # 7. Differentiation
 
 # 8. Integration
