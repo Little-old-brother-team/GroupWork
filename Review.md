@@ -30,8 +30,11 @@
   - [4.11. Cholesky Decomposition](#411-cholesky-decomposition)
   - [4.12. QR Decomposition](#412-qr-decomposition)
 - [5. Fitting](#5-fitting)
-  - [5.1. Least-Square Method](#51-least-square-method)
+  - [5.1. Least-Square](#51-least-square)
   - [5.2. Fitting With Uncertainty](#52-fitting-with-uncertainty)
+  - [5.3. Fitting Linear Forms](#53-fitting-linear-forms)
+  - [5.4. Polynomial Regression](#54-polynomial-regression)
+  - [5.5. Fitting with scipy](#55-fitting-with-scipy)
 - [6. Interpolation](#6-interpolation)
   - [6.1. Linear Interpolation](#61-linear-interpolation)
   - [6.2. Polynomial Interpolation](#62-polynomial-interpolation)
@@ -550,12 +553,38 @@ $$
 
 # 5. Fitting
 
-## 5.1. Least-Square Method
+## 5.1. Least-Square 
+* main idea: assume the model function is $f(x;a_1,\cdots,a_m)$, then to find $a$s minimized the value $$S(a_1,\cdots,a_m)=\sum_{i=1}^N(y_i-f(x_i;a_1,\cdots,a_m))^2=\sum_{i=1}^Nr_i^2$$ 
+
+for Straight-Line Regression
+```python
+def lineFit(x, y):
+    '''
+    Returns slope and y-intercept of linear fit to (x,y)
+    data set
+    '''
+    xavg = x.mean()
+    slope = (y * (x-xavg)).sum()/(x * (x-xavg)).sum()
+    yint = y.mean() - slope*xavg
+    return slope, yint
+```
 
 ## 5.2. Fitting With Uncertainty
-Chi-square
+* this time fit the data with with error, define $$\chi^2=\sum_{i=1}^N\frac{(y_i-f(x_i,a_1,\cdots,a_m))^2}{\sigma_i^2}$$
 
-## 5.3. Fitting with scipy
+## 5.3. Fitting Linear Forms
+$$f(x) = a_0f_0(x)+a_1f_1(x)+\cdots+a_mf_m{x}=\sum_{j=1}^ma_jf_j(x)$$
+- minimizing $S$ yields
+  $$S = \sum_{i=1}^{N}\left[y_i-\sum_{j=1}^ma_jf_j(x)\right]^2$$
+  $\frac{\partial S}{\partial a_k}=0,k = 0,\cdots,m$
+  $$\sum_{j=0}^m\left[\sum_{i=1}^Nf_{j}(x_i)f_k(x_i)\right]a_j=\sum_{i=1}^Nf_k(x_i)y_i$$
+  in matrix form:$$Aa=b$$  $$A_{kj}=\sum_{i=1}^Nf_j(x_i)f_k(x_i), b_k=\sum_{i=1}^Nf_k(x_i)y_i$$
+
+## 5.4. Polynomial Regression
+- this is a special case of **Fitting Linear Forms**, just take $f_j(x)=x^j,j=0,1,2,\cdots,m$. Then $$A_{jk}=\sum_{i=1}^Nx_i^{j+k},b_k=\sum_{i=i}^Nx_i^ky_i$$
+- $$A=\left(\begin{matrix}n&\sum x_i&\sum x_i^2&\cdots&\sum x_i^m\\\sum x_i&\sum x_i^2&\cdots &\sum x_i^m &\sum x_i^{m+1}\\\vdots&\vdots&\vdots&\ddots &\vdots\\\sum x_i^m&\sum x_i^{m+1}&\sum x_i^{m+2}&\cdots&\sum x_i^{2m}\end{matrix}\right),b=\left(\begin{matrix}\sum y_i\\\sum x_i y_i\\\vdots\\\sum x_i^my_i\end{matrix}\right)$$ 
+
+## 5.5. Fitting with scipy
 ```python
 from scipy.optimize import curve_fit
 # Fitting with curve_fit
