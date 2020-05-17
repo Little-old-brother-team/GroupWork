@@ -512,6 +512,28 @@ l_{31}l_{11} & l_{21}l_{31}+l_{22}l_{32} & l_{31}^{2}+l_{32}^{2}+l_{33}^{2}%
 l_{jk}=\frac{a_{jk}-\displaystyle\sum_{m=1}^{m<k}l_{jm}l_{km}}{l_{jj}}, \;( j>k)
 \end{aligned}
 $$
+Codes by HJH:
+```python
+def choleschy(A,b):
+    # Use cholechy method solve linear function.
+    # First calculate L
+    L = np.zeros((A.shape[0],A.shape[1]))
+    for i in range(A.shape[0]):
+        for j in range(A.shape[1]):
+            sum_l = 0
+            if i == j:
+                for k in range(i):
+                    sum_l += L[i,k]**2
+                L[i,j] = np.sqrt(A[i,j]-sum_l)
+            elif i > j:
+                for m in range(j):
+                    sum_l += L[i,m]*L[j,m]
+                L[i,j] = (A[i,j]-sum_l) / L[j,j]
+    # Then solve by backward substution.
+    y = np.linalg.solve(L,b)
+    x = np.linalg.solve(np.transpose(L),y)
+    return x
+```
 
 ## 4.12. QR Decomposition
 
