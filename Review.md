@@ -590,8 +590,8 @@ import numpy as np
 def poly_fit(x,y,N):
     """
     Polynomial Regression with N-th order polynomial 
-    in form a0 + a1 * x + a2 * x^2 + ... + am * x^m
-    return [a0,a1,...,am]
+    in form a0 + a1 * x + a2 * x^2 + ... + aN * x^N
+    return [a0,a1,...,aN]
     """
     A = np.zeros((N+1,N+1))
     b = np.zeros(N+1)
@@ -623,7 +623,11 @@ redchisqr = ((resids / uncertainty) ** 2).sum() #/ float(f.size - 6)
 # 6. Interpolation
 
 ## 6.1. Linear Interpolation
-
+An interpolation problem is called *linear* if the interpolation function is a linear combination of functions
+$$
+f(x;a_0\cdots a_n)=a_0\phi_0(x)+a_1\phi_1(x)+\codts+a_n\phi_n(x)
+$$
+where $a_i$ are n+1 parameters. $\phi_i(x)$ are caller the basic function
 ## 6.2. Polynomial Interpolation
 Vandermonde matrix
 
@@ -651,6 +655,15 @@ def lagrange_interpolation(x, xData, yData):
     y = dot(yData, lagrpoly)
     return y
 ```
+Interpolation Error
+$$\Delta f(x) = \frac{f^{(n+1)}(\xi)}{(n+1)!}(x-x_0)(x-x_1)\cdots(x-x_n),\xi\in[x_0,x_n]$$
+Introduce $$\omega(x) = \prod_{i=1}^{n+1}(x-x_i)$$
+The maximum error is bounded by
+$$\begin{aligned}
+|\Delta f(x)|&\le\frac{\gamma}{4(n+1)}h^{n+1}\\
+\gamma&=\max{|f^{(n+1)}(x)|}\\
+h&=\max{(x_{i+1}-x_i)}
+\end{aligned}$$
 ## 6.4. Newton Interpolation
 ```python
 def newton_eval(xData, yData, x):
@@ -674,15 +687,54 @@ def newton_eval(xData, yData, x):
     return p
 ```
 ## 6.5. Spline Interpolation
-```python
-from scipy.interpolate import CubicSpline
-# Solve with scipy
-# natural boundary condition
-cs = CubicSpline(E, f, bc_type='natural')
-xs = np.linspace(E[0],E[-1])
-plt.plot(xs,cs(xs))
-plt.scatter(E,f)
-```
+- Natural boundary condition
+  $$S_1''(x_1)=S_{n}''(x_{n+1})=0$$
+    ```python
+    #natural
+    from scipy.interpolate import CubicSpline
+    # Solve with scipy
+    # natural boundary condition
+    cs = CubicSpline(E, f, bc_type='natural')
+    # cs = CubicSpline(E, f, bc_type=((2,0),(2,0)))
+    xs = np.linspace(E[0],E[-1])
+    plt.plot(xs,cs(xs))
+    plt.scatter(E,f)
+    ```
+- Perodic BC
+  $$S_1'(x_1)=S_{n}'(x_{n+1}),S_1''(x_1)=S_{n}''(x_{n+1})$$
+    ```python
+    #periodic
+    import numpy as np
+    from scipy.interpolate import CubicSpline
+    import matplotlib.pyplot as plt
+    %matplotlib inline
+
+    theta = 2 * np.pi * np.linspace(0, 1, 5)
+    y = np.c_[np.cos(theta), np.sin(theta)]
+
+    cs = CubicSpline(theta, y, bc_type='periodic')
+
+    print("ds/dx={:.1f} ds/dy={:.1f}".format(cs(0, 1)[0], cs(0, 1)[1]))
+
+    xs = 2 * np.pi * np.linspace(0, 1, 100)
+
+    plt.plot(y[:, 0], y[:, 1], 'o', label='data')
+    plt.plot(np.cos(xs), np.sin(xs), label='true')
+    plt.plot(cs(xs)[:, 0], cs(xs)[:, 1], label='spline')
+    plt.legend(loc='center')
+    ```
+- Clamped BC
+  $$S_1'(x_1)=p,\qquad S_{n}'(x_{n+1})=q$$
+  ```python
+  """
+  If `bc_type` is a 2-tuple, the first and the second value will be
+    applied at the curve start and end respectively. The tuple values can
+    be one of the previously mentioned strings (except 'periodic') or a
+    tuple `(order, deriv_values)` allowing to specify arbitrary
+  """
+  CubicSpline(theta, y, bc_type=((1,p),(1,q)) )
+  ```
+
 # 7. Differentiation
 
 # 8. Integration
