@@ -1,6 +1,6 @@
 {
     "files.autoSave": "afterDelay",
-    "python.dataScience.useNotebookEditor":true,
+    "python.dataScience.useNotebookEditor":false,
     "python.dataScience.textOutputLimit": 0,
     "cSpell.words": [
         "Tridiagonal",
